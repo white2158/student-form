@@ -116,7 +116,10 @@
       data.append('topic', topic);
       data.append('photo', base64Photo);
       const webAppUrl = 'https://script.google.com/macros/s/AKfycbxCblNatPmV5BZksIPl_FC8qdleTE5VMk-hJgynM5yMlMvqtNBnA26t5GB7XVX-X1uT/exec';
-      fetch(webAppUrl, { method:'POST', body:data })
+    fetch('https://script.google.com/macros/s/AKfycbxCblNatPmV5BZksIPl_FC8qdleTE5VMk-hJgynM5yMlMvqtNBnA26t5GB7XVX-X1uT/exec', {
+  method: 'POST',
+  body: data
+})
         .then(res => res.text()).then(res => console.log('Success:', res))
         .catch(err => console.error('Error!', err.message));
       popup.classList.add('active');
