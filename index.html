@@ -13,66 +13,71 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:16px;
+      padding:12px;
     }
     .form-wrapper{
       background:#fff;
-      border-radius:16px;
-      padding:24px;
-      box-shadow:0 10px 40px rgba(0,0,0,.15);
+      border-radius:12px;
+      padding:18px;
+      box-shadow:0 6px 20px rgba(0,0,0,.15);
       width:100%;
-      max-width:480px;
+      max-width:420px;
       animation:slideUp 1s ease forwards;
     }
     header{
       display:flex;
       align-items:center;
-      gap:12px;
-      margin-bottom:20px;
+      gap:10px;
+      margin-bottom:16px;
     }
-    .logo img{width:60px;height:60px;object-fit:contain}
-    h1{font-size:1.25rem;color:#222}
-    label{display:block;font-size:.9rem;font-weight:600;margin:10px 0 6px;color:#333}
+    .logo img{width:48px;height:48px;object-fit:contain}
+    h1{font-size:1.1rem;color:#222}
+    label{display:block;font-size:.85rem;font-weight:600;margin:8px 0 4px;color:#333}
     input,select,textarea{
       width:100%;
-      padding:10px 12px;
+      padding:9px 10px;
       border-radius:8px;
-      border:1px solid #ddd;
-      font-size:.95rem
+      border:1px solid #ccc;
+      font-size:.9rem
     }
-    textarea{resize:vertical;min-height:80px}
+    textarea{resize:vertical;min-height:70px}
     .btn{
-      margin-top:14px;width:100%;
-      padding:12px;border:none;
-      border-radius:10px;
+      margin-top:12px;width:100%;
+      padding:10px;border:none;
+      border-radius:8px;
       background:#ff7a00;
       color:#fff;font-weight:600;
       font-size:1rem;cursor:pointer;
       transition:transform .2s
     }
     .btn:hover{transform:translateY(-2px)}
-    @keyframes slideUp{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+    @keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+    /* Popup */
     .popup{
-      position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);
-      display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,.5);
+      display:flex;align-items:center;justify-content:center;
+      visibility:hidden;opacity:0;
       transition:opacity .4s,visibility .4s;
+      padding:16px;
     }
     .popup.active{visibility:visible;opacity:1}
     .popup-content{
-      background:#fff;padding:30px;border-radius:16px;
-      box-shadow:0 10px 40px rgba(0,0,0,.2);text-align:center;
+      background:#fff;padding:20px;border-radius:12px;
+      box-shadow:0 6px 20px rgba(0,0,0,.2);
+      text-align:center;width:100%;max-width:320px;
       animation:pop .6s ease;
     }
-    @keyframes pop{0%{transform:scale(0.6) rotate(-10deg)}50%{transform:scale(1.05) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
-    .funny{font-size:2rem;animation:bounce 1s infinite alternate}
-    @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+    @keyframes pop{0%{transform:scale(0.7) rotate(-5deg)}50%{transform:scale(1.05) rotate(3deg)}100%{transform:scale(1) rotate(0)}}
+    .funny{font-size:1.8rem;animation:bounce 1s infinite alternate}
+    @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-10px)}}
   </style>
 </head>
 <body>
   <div class="form-wrapper">
     <header>
       <div class="logo">
-        <img src="Iconlogo.jpg" alt="Varendra University Logo" />
+        <img src="Iconlogo.jpg" alt="University Logo" />
       </div>
       <h1>Past Your Boring Presentation</h1>
     </header>
@@ -117,23 +122,35 @@
 
     form.addEventListener('submit', e => {
       e.preventDefault();
-      if(!form.checkValidity()){
+      if (!form.checkValidity()) {
         alert('Please fill out all fields before submitting.');
         return;
       }
 
       const data = new FormData(form);
+      const photoFile = data.get('photo');
 
-      fetch('https://script.google.com/macros/s/AKfycbxCblNatPmV5BZksIPl_FC8qdleTE5VMk-hJgynM5yMlMvqtNBnA26t5GB7XVX-X1uT/exec', {
-        method: 'POST',
-        body: data
-      })
-      .then(res => res.text())
-      .then(res => console.log('Success:', res))
-      .catch(err => console.error('Error!', err.message));
+      if (photoFile) {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+          data.set('photo', reader.result);
 
-      popup.classList.add('active');
-      setTimeout(()=>{popup.classList.remove('active');form.reset();},3000);
+          fetch('https://script.google.com/macros/s/AKfycbxCblNatPmV5BZksIPl_FC8qdleTE5VMk-hJgynM5yMlMvqtNBnA26t5GB7XVX-X1uT/exec', {
+            method: 'POST',
+            body: data
+          })
+          .then(res => res.text())
+          .then(res => console.log('Success:', res))
+          .catch(err => console.error('Error!', err.message));
+
+          popup.classList.add('active');
+          setTimeout(() => {
+            popup.classList.remove('active');
+            form.reset();
+          }, 3000);
+        };
+        reader.readAsDataURL(photoFile);
+      }
     });
   </script>
 </body>
