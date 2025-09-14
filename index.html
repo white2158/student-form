@@ -2,70 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Past Your Boring Presentation</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Inter,system-ui,Arial;background:linear-gradient(135deg,#ff7a00,#ffffff);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:10px;}
-
+    body{
+      font-family:Inter,system-ui,Arial;
+      background:linear-gradient(135deg,#ff7a00,#ffffff);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+    }
     .form-wrapper{
       background:#fff;
       border-radius:16px;
-      padding:20px;
-      box-shadow:0 5px 20px rgba(0,0,0,.15);
+      padding:24px;
+      box-shadow:0 10px 40px rgba(0,0,0,.15);
       width:100%;
       max-width:480px;
       animation:slideUp 1s ease forwards;
-      position:relative;
-      overflow:hidden;
     }
-
     header{
       display:flex;
       align-items:center;
-      gap:10px;
-      margin-bottom:18px;
+      gap:12px;
+      margin-bottom:20px;
     }
-    .logo img{width:48px;height:48px;border-radius:8px;object-fit:contain}
-    h1{font-size:1.1rem;color:#222;flex:1}
-
-    label{display:block;font-size:.9rem;font-weight:600;margin:8px 0 4px;color:#333}
-    input,select,textarea{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #ccc;font-size:.95rem}
-    textarea{resize:vertical;min-height:70px}
-
-    .btn{margin-top:12px;width:100%;padding:10px;border:none;border-radius:10px;background:#ff7a00;color:#fff;font-weight:600;font-size:1rem;cursor:pointer;transition:transform .2s}
+    .logo img{width:60px;height:60px;object-fit:contain}
+    h1{font-size:1.25rem;color:#222}
+    label{display:block;font-size:.9rem;font-weight:600;margin:10px 0 6px;color:#333}
+    input,select,textarea{
+      width:100%;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid #ddd;
+      font-size:.95rem
+    }
+    textarea{resize:vertical;min-height:80px}
+    .btn{
+      margin-top:14px;width:100%;
+      padding:12px;border:none;
+      border-radius:10px;
+      background:#ff7a00;
+      color:#fff;font-weight:600;
+      font-size:1rem;cursor:pointer;
+      transition:transform .2s
+    }
     .btn:hover{transform:translateY(-2px)}
-
     @keyframes slideUp{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
-
-    .popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:opacity .4s,visibility .4s;}
+    .popup{
+      position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);
+      display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;
+      transition:opacity .4s,visibility .4s;
+    }
     .popup.active{visibility:visible;opacity:1}
-    .popup-content{background:#fff;padding:20px;border-radius:16px;box-shadow:0 5px 20px rgba(0,0,0,.2);text-align:center;animation:pop .6s ease;}
+    .popup-content{
+      background:#fff;padding:30px;border-radius:16px;
+      box-shadow:0 10px 40px rgba(0,0,0,.2);text-align:center;
+      animation:pop .6s ease;
+    }
     @keyframes pop{0%{transform:scale(0.6) rotate(-10deg)}50%{transform:scale(1.05) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
     .funny{font-size:2rem;animation:bounce 1s infinite alternate}
     @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-12px)}}
-
-    @media (max-width: 480px) {
-      .form-wrapper{padding:15px;}
-      input,select,textarea{padding:8px 10px;font-size:.9rem}
-      .btn{padding:10px;font-size:.95rem}
-      h1{font-size:1rem}
-    }
   </style>
 </head>
 <body>
   <div class="form-wrapper">
     <header>
       <div class="logo">
-  <img src="Iconlogo.jpg" alt="Varendra University Logo" />
-</div>
+        <img src="Iconlogo.jpg" alt="Varendra University Logo" />
+      </div>
       <h1>Past Your Boring Presentation</h1>
     </header>
     <form id="studentForm">
       <label for="sid">Student ID</label>
       <input id="sid" name="sid" type="text" required>
+
       <label for="sname">Student Name</label>
       <input id="sname" name="sname" type="text" required>
+
       <label for="bg">Previous Background</label>
       <select id="bg" name="bg" required>
         <option value="">Select background</option>
@@ -76,10 +93,13 @@
         <option value="Diploma">Diploma</option>
         <option value="Other">Other</option>
       </select>
+
       <label for="topic">Your Presentation Topic (Paste Below)</label>
       <textarea id="topic" name="topic" required></textarea>
+
       <label for="photo">Passport-size Image</label>
       <input id="photo" name="photo" type="file" accept="image/*" required>
+
       <button type="submit" class="btn">Submit</button>
     </form>
   </div>
@@ -95,33 +115,23 @@
     const form = document.getElementById('studentForm');
     const popup = document.getElementById('popup');
 
-    form.addEventListener('submit', async e => {
+    form.addEventListener('submit', e => {
       e.preventDefault();
-      if(!form.checkValidity()){ alert('Please fill out all fields before submitting.'); return; }
-      const sid = form.sid.value;
-      const sname = form.sname.value;
-      const bg = form.bg.value;
-      const topic = form.topic.value;
-      const photoFile = form.photo.files[0];
-      let base64Photo = '';
-      if(photoFile){
-        const reader = new FileReader();
-        reader.readAsDataURL(photoFile);
-        await new Promise(resolve => reader.onload = () => { base64Photo = reader.result; resolve(); });
+      if(!form.checkValidity()){
+        alert('Please fill out all fields before submitting.');
+        return;
       }
-      const data = new URLSearchParams();
-      data.append('sid', sid);
-      data.append('sname', sname);
-      data.append('bg', bg);
-      data.append('topic', topic);
-      data.append('photo', base64Photo);
-      const webAppUrl = 'https://script.google.com/macros/s/AKfycbxCblNatPmV5BZksIPl_FC8qdleTE5VMk-hJgynM5yMlMvqtNBnA26t5GB7XVX-X1uT/exec';
-    fetch('https://script.google.com/macros/s/AKfycbxCblNatPmV5BZksIPl_FC8qdleTE5VMk-hJgynM5yMlMvqtNBnA26t5GB7XVX-X1uT/exec', {
-  method: 'POST',
-  body: data
-})
-        .then(res => res.text()).then(res => console.log('Success:', res))
-        .catch(err => console.error('Error!', err.message));
+
+      const data = new FormData(form);
+
+      fetch('https://script.google.com/macros/s/AKfycbxCblNatPmV5BZksIPl_FC8qdleTE5VMk-hJgynM5yMlMvqtNBnA26t5GB7XVX-X1uT/exec', {
+        method: 'POST',
+        body: data
+      })
+      .then(res => res.text())
+      .then(res => console.log('Success:', res))
+      .catch(err => console.error('Error!', err.message));
+
       popup.classList.add('active');
       setTimeout(()=>{popup.classList.remove('active');form.reset();},3000);
     });
